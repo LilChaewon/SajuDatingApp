@@ -1,0 +1,65 @@
+# 작업 기록 (Changelog)
+# 파일 수정후 항상 무슨일을 했는지 기록을 남겨야함
+
+- **2025-11-20**
+  - `docs/` 폴더 생성
+  - `docs/PRD.md`: 초기 제품 요구사항 명세서 작성
+  - `app/docs/`로 폴더 이동 후, 사용자 요청에 따라 다시 루트 폴더로 `docs/` 위치 재조정
+  - `docs/Development_Requirements.md`: 프론트엔드/백엔드 통합 개발 요건 문서 작성
+  - `docs/Frontend_Development_Requirements.md`: 프론트엔드 개발 요건을 상세 분리하여 작성
+  - `docs/Backend_Development_Requirements.md`: 백엔드 개발 요건을 상세 분리하여 작성
+  - `docs/Development_Requirements.md`: 분리된 문서 생성 후 기존 통합 문서 삭제
+  - `docs/SUMMARY.md`: 프로젝트 마일스톤 및 작업 기록 문서 생성
+  - `docs/MILESTONES.md`: `SUMMARY.md`에서 마일스톤 부분만 분리하여 생성
+  - `docs/CHANGELOG.md`: `SUMMARY.md`에서 작업 기록 부분만 분리하여 생성
+  - `docs/SUMMARY.md`: 분리된 문서 생성 후 기존 요약 문서 삭제 완료
+- **2025-11-20 (M1 Development)**
+  - `gradle/libs.versions.toml`: navigation, viewpager2 라이브러리 및 버전 추가
+  - `app/build.gradle.kts`: navigation, viewpager2 의존성 추가
+  - `app/src/main/res/values/colors.xml`: 베이지, 갈색 계열 테마 색상 추가
+  - `app/src/main/res/values/themes.xml`: 앱 테마에 신규 색상 적용 (Day)
+  - `app/src/main/res/values-night/themes.xml`: 앱 테마에 신규 색상 적용 (Night)
+  - `app/src/main/res/layout/activity_main.xml`: `BottomNavigationView`와 `FragmentContainerView`로 레이아웃 구조 변경
+  - `app/src/main/res/menu/bottom_nav_menu.xml`: 하단 네비게이션 메뉴 생성
+  - `app/src/main/res/drawable/`: `ic_home.xml`, `ic_chat.xml`, `ic_profile.xml` 아이콘 드로어블 생성
+  - `app/src/main/java/com/example/sajudatingapp/fragment/`: `MainFragment`, `ChatFragment`, `ProfileFragment` 클래스 파일 생성
+  - `app/src/main/res/layout/`: `fragment_main.xml`, `fragment_chat.xml`, `fragment_profile.xml` 레이아웃 파일 생성
+  - `app/src/main/res/navigation/nav_graph.xml`: 3개 프래그먼트를 연결하는 네비게이션 그래프 생성
+  - `app/src/main/java/com/example/sajudatingapp/MainActivity.java`: `BottomNavigationView`와 `NavController` 연동
+  - `docs/MILESTONES.md`: M1 완료로 상태 변경
+- **2025-11-20 (M2 Development)**
+  - `app/src/main/java/com/example/sajudatingapp/model/`: `User.java`, `ChatRoom.java`, `Message.java` 데이터 모델 클래스 생성
+  - `app/src/main/java/com/example/sajudatingapp/util/StubDataUtil.java`: 더미 데이터 및 함수를 제공하는 유틸리티 클래스 생성
+  - `docs/MILESTONES.md`: M2 완료로 상태 변경
+- **2025-11-20 (M3 Development)**
+  - `app/src/main/java/com/example/sajudatingapp/fragment/FortuneDialogFragment.java`: 오늘의 운세 팝업 프래그먼트 생성 및 구현
+  - `app/src/main/res/layout/fragment_fortune_dialog.xml`: 운세 팝업 레이아웃 생성
+  - `app/src/main/res/anim/`: `slide_out_left.xml`, `slide_out_right.xml` 병풍 애니메이션 파일 생성
+  - `app/src/main/res/drawable/folding_screen_panel.xml`: 병풍 패널 드로어블 생성
+  - `app/src/main/res/layout/activity_main.xml`: 병풍 애니메이션을 위한 뷰 추가
+  - `app/src/main/java/com/example/sajudatingapp/MainActivity.java`: 운세 팝업 표시 및 병풍 애니메이션 실행 로직 추가
+  - `app/src/main/res/layout/fragment_main.xml`: `ViewPager2`로 레이아웃 업데이트
+  - `app/src/main/res/layout/item_match_card.xml`: 추천 상대 카드 아이템 레이아웃 생성
+  - `app/src/main/java/com/example/sajudatingapp/adapter/MatchCardAdapter.java`: 추천 상대 카드 어댑터 생성
+  - `app/src/main/java/com/example/sajudatingapp/fragment/MainFragment.java`: `ViewPager2`와 어댑터 연동
+  - `docs/MILESTONES.md`: M3 완료로 상태 변경
+- **2025-11-20 (M4 Development)**
+  - `app/src/main/res/layout/fragment_chat.xml`: `RecyclerView`로 레이아웃 업데이트
+  - `app/src/main/res/layout/item_chat_room.xml`: 채팅방 목록 아이템 레이아웃 생성
+  - `app/src/main/java/com/example/sajudatingapp/adapter/ChatListAdapter.java`: 채팅방 목록 어댑터 생성 및 `ChatActivity` 실행 로직 추가
+  - `app/src/main/java/com/example/sajudatingapp/fragment/ChatFragment.java`: `RecyclerView`와 어댑터 연동
+  - `app/src/main/java/com/example/sajudatingapp/activity/ChatActivity.java`: 채팅방 액티비티 생성 및 구현
+  - `app/src/main/res/layout/activity_chat.xml`: 채팅방 액티비티 레이아웃 생성
+  - `app/src/main/AndroidManifest.xml`: `ChatActivity` 선언 추가
+  - `app/src/main/res/layout/item_message_sent.xml`: 보낸 메시지 아이템 레이아웃 생성
+  - `app/src/main/res/drawable/sent_message_background.xml`: 보낸 메시지 배경 드로어블 생성
+  - `app/src/main/res/layout/item_message_received.xml`: 받은 메시지 아이템 레이아웃 생성
+  - `app/src/main/res/drawable/received_message_background.xml`: 받은 메시지 배경 드로어블 생성
+  - `app/src/main/java/com/example/sajudatingapp/adapter/MessageAdapter.java`: 메시지 목록 어댑터(송/수신 뷰타입 분리) 생성
+  - `app/src/main/res/layout/fragment_profile.xml`: 프로필 수정 UI 레이아웃으로 업데이트
+  - `app/src/main/java/com/example/sajudatingapp/fragment/ProfileFragment.java`: 프로필 저장 버튼 로직 구현
+  - `docs/MILESTONES.md`: M4 완료로 상태 변경
+- **2025-11-20 (M5 Development)**
+  - `./gradlew build`: 전체 프로젝트 빌드 성공 확인
+  - `app/src/main/java/com/example/sajudatingapp/activity/ChatActivity.java`: 하드코딩된 인덱스 사용 로직 개선
+  - `docs/MILESTONES.md`: M5 완료로 상태 변경, 1차 프로토타입 개발 완료
