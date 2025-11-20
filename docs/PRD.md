@@ -54,10 +54,62 @@
   - 아키텍처: MVVM (Model-View-ViewModel) 패턴 권장
   - 라이브러리: Android Jetpack (Navigation, ViewModel, LiveData), Retrofit2 (API 통신), Glide/Picasso (이미지 로딩)
 - **Backend (Server):**
-  - 개발 언어: Node.js (Express), Python (FastAPI), 또는 Kotlin (Spring Boot)
-  - 데이터베이스: PostgreSQL 또는 MySQL
+  - 개발 언어: Node.js (Express)
+  - 데이터베이스: **MySQL**
   - 인증: JWT (JSON Web Token) 기반 인증
-  - 실시간 통신: WebSocket (Socket.IO 등)
+  - 실시간 통신: WebSocket (Socket.IO)
 - **핵심 로직:**
   - **사주 분석 엔진:** 사용자의 생년월일시를 기반으로 오행, 십신 등을 분석하는 라이브러리 또는 자체 로직 구현.
   - **매칭 알고리즘:** 궁합 점수, 사용자 필터, 거리 등을 종합하여 추천 목록을 생성하는 로직.
+
+### 7. 백엔드 API 명세 (Backend API Specification)
+
+#### 7.1. 사용자 인증 (Authentication)
+- `POST /api/auth/register`
+  - **설명:** 신규 사용자 회원가입
+  - **요청 본문:** `email`, `password`, `name`, `birthDate`, `gender` 등
+  - **응답:** `accessToken` (JWT)
+- `POST /api/auth/login`
+  - **설명:** 기존 사용자 로그인
+  - **요청 본문:** `email`, `password`
+  - **응답:** `accessToken` (JWT)
+
+#### 7.2. 사용자 프로필 (User Profile)
+- `GET /api/users/me`
+  - **설명:** 자신의 프로필 정보 조회
+  - **헤더:** `Authorization: Bearer {accessToken}`
+- `PUT /api/users/me`
+  - **설명:** 자신의 프로필 정보 수정
+  - **헤더:** `Authorization: Bearer {accessToken}`
+  - **요청 본문:** 수정할 프로필 정보
+
+#### 7.3. 운세 및 매칭 (Fortune & Matching)
+- `GET /api/fortune/today`
+  - **설명:** 오늘의 운세 정보 조회
+  - **헤더:** `Authorization: Bearer {accessToken}`
+- `GET /api/matches`
+  - **설명:** 오늘의 추천 상대 목록 조회 (최대 5명)
+  - **헤더:** `Authorization: Bearer {accessToken}`
+- `GET /api/matches/{userId}/compatibility`
+  - **설명:** 특정 사용자와의 궁합 점수 조회
+  - **헤더:** `Authorization: Bearer {accessToken}`
+
+#### 7.4. 채팅 (Chat)
+- `POST /api/chat/request/{userId}`
+  - **설명:** 특정 사용자에게 대화 요청 보내기
+  - **헤더:** `Authorization: Bearer {accessToken}`
+- `GET /api/chat/rooms`
+  - **설명:** 참여 중인 모든 채팅방 목록 조회
+  - **헤더:** `Authorization: Bearer {accessToken}`
+- **WebSocket (Socket.IO) Events:**
+  - `connection`: 소켓 연결
+  - `join_room`: 특정 채팅방 참여
+  - `send_message`: 메시지 전송
+  - `receive_message`: 메시지 수신
+
+#### 7.5. 신고 (Reporting)
+- `POST /api/reports`
+  - **설명:** 특정 사용자 신고하기
+  - **헤더:** `Authorization: Bearer {accessToken}`
+  - **요청 본문:** `reportedUserId`, `reason` (선택 사항)
+  - **응답:** 성공 또는 실패 메시지
