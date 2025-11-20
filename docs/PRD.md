@@ -55,12 +55,15 @@
   - 라이브러리: Android Jetpack (Navigation, ViewModel, LiveData), Retrofit2 (API 통신), Glide/Picasso (이미지 로딩)
 - **Backend (Server):**
   - 개발 언어: Node.js (Express)
+  - **추가 요구사항: Python 런타임 (TensorFlow, numpy 등 포함)**
   - 데이터베이스: **MySQL**
   - 인증: JWT (JSON Web Token) 기반 인증
   - 실시간 통신: WebSocket (Socket.IO)
 - **핵심 로직:**
-  - **사주 분석 엔진:** 사용자의 생년월일시를 기반으로 오행, 십신 등을 분석하는 라이브러리 또는 자체 로직 구현.
-  - **매칭 알고리즘:** 궁합 점수, 사용자 필터, 거리 등을 종합하여 추천 목록을 생성하는 로직.
+  - **사주 분석 엔진 (Saju Analysis Engine):**
+    - **오늘의 운세:** `legacy` 폴더의 Python 코드(`daily_woonse.py`)를 분석, Node.js로 로직을 포팅하여 구현. 사용자의 일간(日干)과 오늘의 일진(日辰)을 비교하여 '십성(十星)'을 계산하고, 이를 미리 정의된 CSV 데이터와 매칭하여 운세 텍스트를 제공.
+    - **궁합 점수:** `legacy` 폴더의 Python 코드(`hd2.ipynb`)를 기반으로 구현. Node.js 서버는 두 사용자의 사주 정보를 Python 스크립트에 전달하고, 스크립트는 사전 훈련된 Keras/TensorFlow 모델(`.h5`)을 이용해 궁합 점수를 계산한 후 결과를 반환.
+  - **매칭 알고리즘:** 위에서 계산된 궁합 점수를 핵심 지표로 사용하여, 사용자 필터, 거리 등을 종합적으로 고려해 추천 목록을 생성.
 
 ### 7. 백엔드 API 명세 (Backend API Specification)
 

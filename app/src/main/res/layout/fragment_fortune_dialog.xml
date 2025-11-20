@@ -31,6 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/wood_frame"
+        android:textColor="@color/hanji_paper"
         android:text="닫기"/>
 
 </LinearLayout>
