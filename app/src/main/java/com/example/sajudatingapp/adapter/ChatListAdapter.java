@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.sajudatingapp.R;
 import com.example.sajudatingapp.activity.ChatActivity;
 import com.example.sajudatingapp.model.ChatRoom;
@@ -22,6 +23,11 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
     public ChatListAdapter(List<ChatRoom> chatRoomList) {
         this.chatRoomList = chatRoomList;
+    }
+    
+    public void setChatRooms(List<ChatRoom> chatRooms) {
+        this.chatRoomList = chatRooms;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -58,10 +64,16 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
         }
 
         void bind(ChatRoom chatRoom) {
-            partnerName.setText(chatRoom.getPartner().getName());
-            lastMessage.setText(chatRoom.getLastMessage());
+            partnerName.setText(chatRoom.getOtherUserName());
+            // TODO: lastMessage needs to be added to the API response for chat rooms
+            lastMessage.setText("..."); 
+            
+            Glide.with(itemView.getContext())
+                    .load(chatRoom.getOtherUserProfilePictureUrl())
+                    .placeholder(R.drawable.ic_profile)
+                    .into(partnerProfile);
 
-            if (chatRoom.isPending()) {
+            if ("pending".equalsIgnoreCase(chatRoom.getStatus())) {
                 pendingStatus.setVisibility(View.VISIBLE);
                 lastMessage.setText("대화 요청을 보냈습니다.");
             } else {
@@ -70,8 +82,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(itemView.getContext(), ChatActivity.class);
-                // In a real app, you would pass the chatRoomId
-                // intent.putExtra("CHAT_ROOM_ID", chatRoom.getId());
+                intent.putExtra("CHAT_ROOM_ID", chatRoom.getId());
+                intent.putExtra("CHAT_PARTNER_NAME", chatRoom.getOtherUserName());
                 itemView.getContext().startActivity(intent);
             });
         }

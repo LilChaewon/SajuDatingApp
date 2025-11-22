@@ -8,8 +8,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar; // Import Toolbar
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,10 +18,16 @@ import com.example.sajudatingapp.R;
 import com.example.sajudatingapp.adapter.MessageAdapter;
 import com.example.sajudatingapp.model.ChatRoom;
 import com.example.sajudatingapp.model.Message;
+import com.example.sajudatingapp.network.ApiClient;
 import com.example.sajudatingapp.util.StubDataUtil;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -29,28 +36,26 @@ public class ChatActivity extends AppCompatActivity {
     private List<Message> messageList;
     private EditText messageInput;
     private Button sendButton;
-    private Toolbar toolbar; // Declare Toolbar
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        toolbar = findViewById(R.id.toolbar); // Initialize Toolbar
-        setSupportActionBar(toolbar); // Set Toolbar as ActionBar
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        // Enable back button
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setTitle("상대방 이름 (채팅)"); // Placeholder title
+            getSupportActionBar().setTitle("상대방 이름 (채팅)");
         }
 
         messagesRecyclerView = findViewById(R.id.messages_recycler_view);
         messageInput = findViewById(R.id.et_message_input);
         sendButton = findViewById(R.id.btn_send);
 
-        // In a real app, you'd pass a chatRoomId and get the specific chat room
         ChatRoom dummyChatRoom = findFirstNonPendingChat();
 
         messageList = new ArrayList<>(StubDataUtil.getMessagesForChatRoom(dummyChatRoom));
@@ -63,7 +68,6 @@ public class ChatActivity extends AppCompatActivity {
         sendButton.setOnClickListener(v -> {
             String messageText = messageInput.getText().toString().trim();
             if (!messageText.isEmpty()) {
-                // Add the new message as a "sent" message
                 Message newMessage = new Message(messageText, true);
                 messageList.add(newMessage);
                 messageAdapter.notifyItemInserted(messageList.size() - 1);
@@ -72,7 +76,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        // For prototype: disable chat if it's a pending one
         if (dummyChatRoom.isPending()) {
             messageInput.setEnabled(false);
             sendButton.setEnabled(false);
@@ -82,23 +85,59 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed(); // Handle back button click
+        onBackPressed();
         return true;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.chat_menu, menu); // Inflate the chat menu
+        getMenuInflater().inflate(R.menu.chat_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_report) {
-            Toast.makeText(this, "신고하기 버튼 클릭됨", Toast.LENGTH_SHORT).show();
+            showReportDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showReportDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("사용자 신고")
+                .setMessage("이 사용자를 신고하시겠습니까?")
+                .setPositiveButton("신고", (dialog, which) -> {
+                    // TODO: Replace with the actual ID of the user being reported
+                    int reportedUserId = 1;
+
+                    JsonObject reportData = new JsonObject();
+                    reportData.addProperty("reportedUserId", reportedUserId);
+                    reportData.addProperty("reason", "Inappropriate behavior in chat.");
+
+                    // This assumes a token has been set in ApiClient after login.
+                    // For now, let's assume a token is available.
+                    // ApiClient.setAuthToken("your_dummy_jwt");
+                    
+                    ApiClient.getApiService().createReport(reportData).enqueue(new Callback<JsonObject>() {
+                        @Override
+                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                            if (response.isSuccessful()) {
+                                Toast.makeText(ChatActivity.this, "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(ChatActivity.this, "신고 접수에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<JsonObject> call, Throwable t) {
+                            Toast.makeText(ChatActivity.this, "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                })
+                .setNegativeButton("취소", null)
+                .show();
     }
 
     private ChatRoom findFirstNonPendingChat() {
@@ -107,8 +146,6 @@ public class ChatActivity extends AppCompatActivity {
                 return room;
             }
         }
-        // Fallback to the first room if none are active
         return StubDataUtil.getChatRooms().get(0);
     }
 }
-

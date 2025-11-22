@@ -1,26 +1,42 @@
 package com.example.sajudatingapp.model;
 
-public class ChatRoom {
-    private User partner;
-    private String lastMessage;
-    private boolean isPending; // For "acceptance required" state
+import com.google.gson.annotations.SerializedName;
 
-    public ChatRoom(User partner, String lastMessage, boolean isPending) {
-        this.partner = partner;
-        this.lastMessage = lastMessage;
-        this.isPending = isPending;
-    }
+public class ChatRoom {
+
+    @SerializedName("id")
+    private int id;
+
+    @SerializedName("status")
+    private String status;
+
+    @SerializedName("other_user_id")
+    private int otherUserId;
+
+    @SerializedName("other_user_name")
+    private String otherUserName;
+    
+    @SerializedName("other_user_profile_picture_url")
+    private String otherUserProfilePictureUrl;
 
     // Getters
-    public User getPartner() {
-        return partner;
+    public int getId() {
+        return id;
     }
 
-    public String getLastMessage() {
-        return lastMessage;
+    public String getStatus() {
+        return status;
     }
 
-    public boolean isPending() {
-        return isPending;
+    public int getOtherUserId() {
+        return otherUserId;
+    }
+
+    public String getOtherUserName() {
+        return otherUserName;
+    }
+
+    public String getOtherUserProfilePictureUrl() {
+        return otherUserProfilePictureUrl;
     }
 }

@@ -1,34 +1,16 @@
-const express = require('express');
 const http = require('http');
 const { Server } = require("socket.io");
-const pool = require('./db'); // Import the pool from db.js
+const pool = require('./db');
 require('dotenv').config();
+const app = require('./app'); // Import the app
+const initializeSocket = require('./socket');
 
-const authRoutes = require('./routes/auth');
-
-const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(express.json()); // To parse JSON bodies
-
-// Routes
-app.use('/api/auth', authRoutes);
-
-
-app.get('/', (req, res) => {
-  res.send('Saju Dating App Server is running!');
-});
-
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
+// Initialize Socket.IO logic
+initializeSocket(io);
 
 // Test database connection and start server
 pool.getConnection()

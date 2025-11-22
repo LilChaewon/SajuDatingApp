@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,13 +17,20 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.sajudatingapp.R;
 import com.example.sajudatingapp.adapter.MatchCardAdapter;
 import com.example.sajudatingapp.model.User;
-import com.example.sajudatingapp.util.StubDataUtil;
+import com.example.sajudatingapp.network.ApiClient;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainFragment extends Fragment {
 
     private ImageView leftPanel, rightPanel;
+    private ViewPager2 viewPager;
+    private MatchCardAdapter adapter;
     private boolean isFirstLoad = true;
 
     @Nullable
@@ -35,13 +43,14 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ViewPager2 viewPager = view.findViewById(R.id.match_card_view_pager);
+        viewPager = view.findViewById(R.id.match_card_view_pager);
         leftPanel = view.findViewById(R.id.left_panel);
         rightPanel = view.findViewById(R.id.right_panel);
 
-        List<User> userList = StubDataUtil.getTodayMatchCandidates();
-        MatchCardAdapter adapter = new MatchCardAdapter(userList);
+        adapter = new MatchCardAdapter(new ArrayList<>()); // Initialize with empty list
         viewPager.setAdapter(adapter);
+
+        fetchMatches();
 
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -51,6 +60,24 @@ public class MainFragment extends Fragment {
                     playFoldingScreenAnimation();
                 }
                 isFirstLoad = false;
+            }
+        });
+    }
+
+    private void fetchMatches() {
+        ApiClient.getApiService().getMatches().enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    adapter.setUsers(response.body());
+                } else {
+                    Toast.makeText(getContext(), "추천 상대를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Toast.makeText(getContext(), "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

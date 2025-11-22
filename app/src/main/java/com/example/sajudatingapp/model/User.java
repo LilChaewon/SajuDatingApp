@@ -1,23 +1,37 @@
 package com.example.sajudatingapp.model;
 
-public class User {
-    private String name;
-    private int age;
-    private String location;
-    private String job;
-    private String bio;
-    private int compatibilityScore;
+import com.google.gson.annotations.SerializedName;
 
-    public User(String name, int age, String location, String job, String bio, int compatibilityScore) {
-        this.name = name;
-        this.age = age;
-        this.location = location;
-        this.job = job;
-        this.bio = bio;
-        this.compatibilityScore = compatibilityScore;
-    }
+public class User {
+    @SerializedName("id")
+    private int id;
+
+    @SerializedName("name")
+    private String name;
+
+    @SerializedName("age")
+    private int age;
+
+    @SerializedName("location")
+    private String location;
+
+    @SerializedName("job")
+    private String job;
+
+    @SerializedName("bio")
+    private String bio;
+
+    @SerializedName("profile_picture_url")
+    private String profilePictureUrl;
+
+    // A compatibility score field that can be set locally after a separate API call
+    private transient int compatibilityScore;
 
     // Getters
+    public int getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -37,8 +51,16 @@ public class User {
     public String getBio() {
         return bio;
     }
+    
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
 
     public int getCompatibilityScore() {
         return compatibilityScore;
+    }
+
+    public void setCompatibilityScore(int compatibilityScore) {
+        this.compatibilityScore = compatibilityScore;
     }
 }
