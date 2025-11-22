@@ -19,9 +19,18 @@ import java.util.List;
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> {
 
     private List<ChatRoom> chatRoomList;
+    private OnChatRoomClickListener listener;
+
+    public interface OnChatRoomClickListener {
+        void onChatRoomClick(ChatRoom chatRoom);
+    }
 
     public ChatListAdapter(List<ChatRoom> chatRoomList) {
         this.chatRoomList = chatRoomList;
+    }
+
+    public void setOnChatRoomClickListener(OnChatRoomClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -34,7 +43,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
     @Override
     public void onBindViewHolder(@NonNull ChatListViewHolder holder, int position) {
         ChatRoom chatRoom = chatRoomList.get(position);
-        holder.bind(chatRoom);
+        holder.bind(chatRoom, listener);
     }
 
     @Override
@@ -57,7 +66,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             pendingStatus = itemView.findViewById(R.id.tv_pending_status);
         }
 
-        void bind(ChatRoom chatRoom) {
+        void bind(ChatRoom chatRoom, OnChatRoomClickListener listener) {
             partnerName.setText(chatRoom.getPartner().getName());
             lastMessage.setText(chatRoom.getLastMessage());
 
@@ -69,10 +78,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             }
 
             itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(itemView.getContext(), ChatActivity.class);
-                // In a real app, you would pass the chatRoomId
-                // intent.putExtra("CHAT_ROOM_ID", chatRoom.getId());
-                itemView.getContext().startActivity(intent);
+                if (listener != null) {
+                    listener.onChatRoomClick(chatRoom);
+                }
             });
         }
     }
