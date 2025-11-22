@@ -16,6 +16,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.sajudatingapp.fragment.FortuneDialogFragment;
+import com.example.sajudatingapp.util.NotificationHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements FortuneDialogFragment.OnFortuneDialogDismissedListener {
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements FortuneDialogFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        NotificationHelper.createNotificationChannel(this);
 
         mainToolbar = findViewById(R.id.main_toolbar); // Initialize Toolbar
         setSupportActionBar(mainToolbar); // Set Toolbar as ActionBar
@@ -46,15 +49,19 @@ public class MainActivity extends AppCompatActivity implements FortuneDialogFrag
 
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
-        if (savedInstanceState == null) {
-            // Keep the screen visible initially
-            foldingScreenLayout.setVisibility(View.VISIBLE);
-            FortuneDialogFragment dialog = new FortuneDialogFragment();
-            dialog.show(getSupportFragmentManager(), "FortuneDialog");
-        } else {
-            // If restored, hide the animation screen immediately
-            foldingScreenLayout.setVisibility(View.GONE);
-        }
+        // UI 확인용: folding screen과 dialog 임시로 완전히 숨김
+        foldingScreenLayout.setVisibility(View.GONE);
+        
+        // FortuneDialog는 나중에 활성화
+        // if (savedInstanceState == null) {
+        //     // Keep the screen visible initially
+        //     foldingScreenLayout.setVisibility(View.VISIBLE);
+        //     FortuneDialogFragment dialog = new FortuneDialogFragment();
+        //     dialog.show(getSupportFragmentManager(), "FortuneDialog");
+        // } else {
+        //     // If restored, hide the animation screen immediately
+        //     foldingScreenLayout.setVisibility(View.GONE);
+        // }
     }
 
     @Override
