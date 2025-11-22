@@ -1,4 +1,4 @@
-# 프로젝트 요약 (Project Summary)
+# 프로젝트 요약문서 (Project Summary)
 
 ## 1. 구현 스펙 (Technical Specifications)
 
